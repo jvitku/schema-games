@@ -236,7 +236,7 @@ class BreakoutEngine(gym.Env):
                              self.report_outer_walls_as_entities)
 
                 self.walls += [Wall((w, y), is_entity=is_entity),
-                               Wall((self.width-w-1, y), is_entity=is_entity)]
+                               Wall((self.width - w - 1, y), is_entity=is_entity)]
 
         for x in range(self.width):
             for w in range(self.wall_thickness):
@@ -245,7 +245,7 @@ class BreakoutEngine(gym.Env):
                               x <= self.width - self.wall_thickness) or
                              self.report_outer_walls_as_entities)
 
-                self.walls += [PaddleShrinkingWall((x, self.height-w-1),
+                self.walls += [PaddleShrinkingWall((x, self.height - w - 1),
                                                    is_entity=is_entity)]
                 if self.bottom_wall_of_punishment:
                     self.walls += [WallOfPunishment((x, w), is_entity=True)]
@@ -279,7 +279,7 @@ class BreakoutEngine(gym.Env):
             Contains useful information about the environment for debugging
             purposes only.
         """
-        for attribute, initial_value in self.reset_mutables.iteritems():
+        for attribute, initial_value in self.reset_mutables.items():
             setattr(self, attribute, initial_value)
 
         # Set up game objects (balls and paddle: position/velocity do not
@@ -293,7 +293,7 @@ class BreakoutEngine(gym.Env):
         self.miscellaneous = []
         self.bricks = []
         self.lost_balls = []
-        self.balls = [Ball(position=(bx, by)) for _ in xrange(self.num_balls)]
+        self.balls = [Ball(position=(bx, by)) for _ in range(self.num_balls)]
         self.paddle = Paddle((px, py), shape=self.initial_paddle_shape)
 
         self.layout()
@@ -306,8 +306,8 @@ class BreakoutEngine(gym.Env):
         self.standard_color_map = {c: i for i, c in enumerate(unique_colors)}
 
         if self.debugging:
-            print blue("Detected the following unique "
-                       "colors: {}".format(self.standard_color_map))
+            print(blue("Detected the following unique "
+                       "colors: {}".format(self.standard_color_map)))
 
         # Counter variables updated at each timestep
         self.current_episode_frame = -1
@@ -435,7 +435,7 @@ class BreakoutEngine(gym.Env):
         assert self.done is not None
 
         debug_info = {
-            'entity_states':  self.get_entity_states(),
+            'entity_states': self.get_entity_states(),
         }
 
         if self.return_state_as_image:
@@ -514,8 +514,8 @@ class BreakoutEngine(gym.Env):
             return self._memoized_index_to_velocity[self.ball_movement_radius]
         except KeyError:
             unit_square = []
-            coordinates = xrange(-self.ball_movement_radius,
-                                 self.ball_movement_radius + 1)
+            coordinates = range(-self.ball_movement_radius,
+                                self.ball_movement_radius + 1)
 
             for dx, dy in product(coordinates, coordinates):
                 if max(abs(dx), abs(dy)) != self.ball_movement_radius:
@@ -543,7 +543,7 @@ class BreakoutEngine(gym.Env):
         """
         velocity_to_index = {}
 
-        for k, v in self.index_to_velocity.iteritems():
+        for k, v in self.index_to_velocity.items():
             velocity_to_index[v] = k
 
         return velocity_to_index
@@ -730,7 +730,7 @@ class BreakoutEngine(gym.Env):
         elif self.report_nzis_as_entities == 'none':
             dr, dc = breakout_object.shape
             r, c = breakout_object.position
-            reported_nzis = [(r + dr//2, c + dc//2)]
+            reported_nzis = [(r + dr // 2, c + dc // 2)]
         else:
             raise ValueError("Invalid parameter: %s" %
                              self.report_nzis_as_entities)
@@ -749,9 +749,9 @@ class BreakoutEngine(gym.Env):
                 assert 0 <= dv < breakout_object.shape[1]
 
             state = {
-                ('position', (r, c)):   0.0,
-                ('shape', (du, dv)):    0.0,
-                ('color', color):       0.0,
+                ('position', (r, c)): 0.0,
+                ('shape', (du, dv)): 0.0,
+                ('color', color): 0.0,
             }
 
             parsed_pixels.append((state, eid))
@@ -873,7 +873,7 @@ class BreakoutEngine(gym.Env):
 
         # [Emptiness]
         if (bx + vx, by + vy) not in occupied_positions and \
-           vx_after_paddle_bounce is None:
+                vx_after_paddle_bounce is None:
 
             self.debugprint_line('ball physics', 0, vx_after_paddle_bounce)
 
@@ -976,7 +976,7 @@ class BreakoutEngine(gym.Env):
         if self.all_good_bricks_destroyed():
             self.reward += self.reward_upon_no_bricks_left
             self.done = True
-            print green("Game over! You won.")
+            print(green("Game over! You won."))
 
         # Catch lost balls
         for ball in self.balls:
@@ -994,11 +994,11 @@ class BreakoutEngine(gym.Env):
 
             if self.num_lives > 0:
                 self.done = False
-                print red("[---] Lives remaining:"), self.num_lives
+                print(red("[---] Lives remaining:"), self.num_lives)
             else:
                 self.done = True
-                print red("[---] Game over! You lost.")
-                print red("*" * 80)
+                print(red("[---] Game over! You lost."))
+                print(red("*" * 80))
 
         if self.done is None:
             self.done = False
@@ -1020,9 +1020,9 @@ class BreakoutEngine(gym.Env):
         speeds = np.arange(-self.paddle_speed, self.paddle_speed + 1)
         dx = np.random.choice(speeds, p=self.paddle_speed_distribution)
         dx, dy = {
-            self.LEFT:  np.array([-dx, 0]),
+            self.LEFT: np.array([-dx, 0]),
             self.RIGHT: np.array([+dx, 0]),
-            self.NOOP:  np.array([0,   0]),
+            self.NOOP: np.array([0, 0]),
         }[action]
 
         # If there is not enough space for a full translation,
@@ -1090,7 +1090,7 @@ class BreakoutEngine(gym.Env):
             return old_index
         else:
             while True:
-                new_index = random.choice(self.index_to_velocity.keys())
+                new_index = random.choice(list(self.index_to_velocity.keys()))
 
                 # If True, make sure that new velocity stays in same quadrant
                 if not self.allow_bounce_against_physics:
@@ -1129,7 +1129,7 @@ class BreakoutEngine(gym.Env):
                                  self.ball_movement_radius])
 
         prf_left = blockedrange(half, self.ball_movement_radius)
-        prf_left = [[k+1] * len(sub) for k, sub in enumerate(prf_left)]
+        prf_left = [[k + 1] * len(sub) for k, sub in enumerate(prf_left)]
         prf_left = [item for sub in prf_left for item in sub]
         prf_left = np.array(prf_left).ravel()
         prf = np.hstack((-prf_left[::-1], prf_center, prf_left))
@@ -1195,11 +1195,11 @@ class BreakoutEngine(gym.Env):
         paddle_x_min = min(px for px, py in self.paddle.offset_nzis)
         paddle_x_max = max(px for px, py in self.paddle.offset_nzis)
 
-        if paddle_x_min <= x <= paddle_x_max:   # Case #1 (see docstring)
+        if paddle_x_min <= x <= paddle_x_max:  # Case #1 (see docstring)
             ball_impact_x = x
-        elif x > paddle_x_max:                  # Case #2A (see docstring)
+        elif x > paddle_x_max:  # Case #2A (see docstring)
             ball_impact_x = paddle_x_max
-        elif x < paddle_x_min:                  # Case #2B (see docstring)
+        elif x < paddle_x_min:  # Case #2B (see docstring)
             ball_impact_x = paddle_x_min
 
         # Get integral coordinate of ball impact relatively to paddle left tip
@@ -1252,13 +1252,13 @@ class BreakoutEngine(gym.Env):
             Updated positions for each ball.
         """
         downward_velocities = {k: v
-                               for k, v in self.index_to_velocity.iteritems()
+                               for k, v in self.index_to_velocity.items()
                                if v[1] < 0}
 
         for ball in self.balls:
-            ball.velocity_index = random.choice(downward_velocities.keys())
+            ball.velocity_index = random.choice(list(downward_velocities.keys()))
 
-        brick_ordinates = [self.height-1-self.wall_thickness]
+        brick_ordinates = [self.height - 1 - self.wall_thickness]
         brick_ordinates += [brick.position[1] + brick.nzis_min[1]
                             for brick in self.bricks]
         maximum_ball_y = min(brick_ordinates)
@@ -1269,7 +1269,7 @@ class BreakoutEngine(gym.Env):
                 # Below is the correct way to randomize ball ordinate, to avoid
                 # overfitting on the ball/paddle gap modulo _MAX_SPEED.
                 ###############################################################
-                ball_offsets = range(-self.num_balls-1, self.num_balls+2)
+                ball_offsets = range(-self.num_balls - 1, self.num_balls + 2)
                 ball.position = (
                     self.width // 2 + np.random.choice(ball_offsets),
                     maximum_ball_y // 2 - random.randrange(_MAX_SPEED)
@@ -1279,10 +1279,10 @@ class BreakoutEngine(gym.Env):
 
                 if tuple(ball.position) not in occupied_positions:
                     if self.debugging:
-                        print \
+                        print(
                             purple("Ball-paddle separation at collision:"), \
                             yellow("%i pixels" % (ball.position[1] % 2)), \
-                            purple("vertically when |v[y]| = %i" % _MAX_SPEED)
+                            purple("vertically when |v[y]| = %i" % _MAX_SPEED))
                     break
 
     ###########################################################################
@@ -1305,7 +1305,7 @@ class BreakoutEngine(gym.Env):
                 string += cyan("{}, {}".format(*velocity_))
                 string += blue("),")
 
-            print string
+            print(string)
 
     def debugprint_line(self, event_type, *args):
         """
@@ -1315,22 +1315,22 @@ class BreakoutEngine(gym.Env):
 
         if self.debugging:
             if event_type == 'collision':
-                print " " * N_SPACES, yellow("<!>")
+                print(" " * N_SPACES, yellow("<!>"))
             elif event_type == 'destruction':
-                print " " * N_SPACES, red("<!>")
+                print(" " * N_SPACES, red("<!>"))
             elif event_type == 'conditional event':
                 event_name = type(args[0]).__name__
-                print " " * N_SPACES, red("<E> : {}".format(event_name))
+                print(" " * N_SPACES, red("<E> : {}".format(event_name)))
             elif event_type == 'reward':
-                print " " * N_SPACES, green("-> REWARD:"), purple(self.reward)
+                print(" " * N_SPACES, green("-> REWARD:"), purple(self.reward))
             elif event_type == 'ball physics':
-                print " " * N_SPACES, \
-                    green("-> {}".format(args[0])), \
-                    yellow("vx<PRF>: {}".format(args[1]))
+                print(" " * N_SPACES, \
+                      green("-> {}".format(args[0])), \
+                      yellow("vx<PRF>: {}".format(args[1])))
             elif event_type == 'higher-order collision':
-                print " " * N_SPACES, cyan("<>")
+                print(" " * N_SPACES, cyan("<>"))
             elif event_type == 'ball inside paddle':
-                print " " * N_SPACES, purple("<>")
+                print(" " * N_SPACES, purple("<>"))
 
     def all_good_bricks_destroyed(self):
         """
